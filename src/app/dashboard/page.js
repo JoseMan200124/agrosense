@@ -39,6 +39,59 @@ import Filter from "@/app/components/Filter";
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useRef, useMemo } from "react";
 
+// Definir allData fuera del componente para evitar que se recree en cada render
+const allData = {
+    Enero: {
+        indicators: { tempMax: 30, humidity: 80, rainProb: 50, windSpeed: 15, uvIndex: 6, soilLevel: 35, pestStatus: "Bajo" },
+        barChart: [
+            { name: 'Enero', recursos: 400 },
+            { name: 'Febrero', recursos: 300 },
+            { name: 'Marzo', recursos: 500 },
+        ],
+        lineChart: [
+            { name: 'Lun', temperatura: 22 },
+            { name: 'Mar', temperatura: 24 },
+            { name: 'Mié', temperatura: 19 },
+        ],
+        pieChart: [
+            { name: 'Agua', value: 400 },
+            { name: 'Fertilizantes', value: 300 },
+            { name: 'Pesticidas', value: 300 },
+            { name: 'Electricidad', value: 200 },
+        ],
+        areaChart: [
+            { name: 'Lun', humedad: 65 },
+            { name: 'Mar', humedad: 59 },
+            { name: 'Mié', humedad: 80 },
+        ],
+    },
+    Febrero: {
+        indicators: { tempMax: 28, humidity: 75, rainProb: 60, windSpeed: 18, uvIndex: 5, soilLevel: 40, pestStatus: "Moderado" },
+        barChart: [
+            { name: 'Enero', recursos: 350 },
+            { name: 'Febrero', recursos: 320 },
+            { name: 'Marzo', recursos: 450 },
+        ],
+        lineChart: [
+            { name: 'Jue', temperatura: 23 },
+            { name: 'Vie', temperatura: 25 },
+            { name: 'Sáb', temperatura: 20 },
+        ],
+        pieChart: [
+            { name: 'Agua', value: 380 },
+            { name: 'Fertilizantes', value: 310 },
+            { name: 'Pesticidas', value: 290 },
+            { name: 'Electricidad', value: 220 },
+        ],
+        areaChart: [
+            { name: 'Jue', humedad: 70 },
+            { name: 'Vie', humedad: 65 },
+            { name: 'Sáb', humedad: 75 },
+        ],
+    },
+    // Añade más meses según sea necesario
+};
+
 // Importar los componentes de gráficos de manera dinámica con SSR deshabilitado
 const CustomBarChart = dynamic(() => import('@/app/components/BarChart'), { ssr: false });
 const CustomLineChart = dynamic(() => import('@/app/components/LineChart'), { ssr: false });
@@ -64,59 +117,6 @@ export default function Dashboard() {
     const [aiMessageAdded, setAiMessageAdded] = useState(false); // Nueva variable para controlar IA message
 
     const messagesEndRef = useRef(null);
-
-    // Datos simulados por mes para filtrar
-    const allData = {
-        Enero: {
-            indicators: { tempMax: 30, humidity: 80, rainProb: 50, windSpeed: 15, uvIndex: 6, soilLevel: 35, pestStatus: "Bajo" },
-            barChart: [
-                { name: 'Enero', recursos: 400 },
-                { name: 'Febrero', recursos: 300 },
-                { name: 'Marzo', recursos: 500 },
-            ],
-            lineChart: [
-                { name: 'Lun', temperatura: 22 },
-                { name: 'Mar', temperatura: 24 },
-                { name: 'Mié', temperatura: 19 },
-            ],
-            pieChart: [
-                { name: 'Agua', value: 400 },
-                { name: 'Fertilizantes', value: 300 },
-                { name: 'Pesticidas', value: 300 },
-                { name: 'Electricidad', value: 200 },
-            ],
-            areaChart: [
-                { name: 'Lun', humedad: 65 },
-                { name: 'Mar', humedad: 59 },
-                { name: 'Mié', humedad: 80 },
-            ],
-        },
-        Febrero: {
-            indicators: { tempMax: 28, humidity: 75, rainProb: 60, windSpeed: 18, uvIndex: 5, soilLevel: 40, pestStatus: "Moderado" },
-            barChart: [
-                { name: 'Enero', recursos: 350 },
-                { name: 'Febrero', recursos: 320 },
-                { name: 'Marzo', recursos: 450 },
-            ],
-            lineChart: [
-                { name: 'Jue', temperatura: 23 },
-                { name: 'Vie', temperatura: 25 },
-                { name: 'Sáb', temperatura: 20 },
-            ],
-            pieChart: [
-                { name: 'Agua', value: 380 },
-                { name: 'Fertilizantes', value: 310 },
-                { name: 'Pesticidas', value: 290 },
-                { name: 'Electricidad', value: 220 },
-            ],
-            areaChart: [
-                { name: 'Jue', humedad: 70 },
-                { name: 'Vie', humedad: 65 },
-                { name: 'Sáb', humedad: 75 },
-            ],
-        },
-        // Añade más meses según sea necesario
-    };
 
     // Obtener datos filtrados usando useMemo
     const filteredData = useMemo(() => {
@@ -155,14 +155,23 @@ export default function Dashboard() {
                 { name: 'Dom', humedad: 40 },
             ],
         };
-    }, [selectedMonth, allData]);
+    }, [selectedMonth]);
 
-    // Definir colores fuera de los objetos
+    // Definir colores fuera de los objetos y evitar llamadas dentro de callbacks o loops
     const scrollbarThumbColor = useColorModeValue("#CBD5E0", "#4A5568");
     const cardBg = useColorModeValue("gray.700", "gray.800");
     const cardHoverBg = useColorModeValue("gray.600", "gray.700");
     const chatBg = useColorModeValue("white", "gray.800");
     const chatText = useColorModeValue("black", "white");
+    const headingColor = useColorModeValue("teal.600", "teal.300");
+    const mapHeadingTeal = useColorModeValue("teal.600", "teal.200");
+    const mapHeadingBlue = useColorModeValue("blue.600", "blue.200");
+    const mapHeadingOrange = useColorModeValue("orange.600", "orange.200");
+    const mapHeadingPurple = useColorModeValue("purple.600", "purple.200");
+    const resourceHeadingTeal = useColorModeValue("teal.600", "teal.200");
+    const resourceHeadingBlue = useColorModeValue("blue.600", "blue.200");
+    const resourceHeadingYellow = useColorModeValue("yellow.600", "yellow.200");
+    const resourceHeadingPurple = useColorModeValue("purple.600", "purple.200");
 
     useEffect(() => {
         const animateNumbers = () => {
@@ -218,7 +227,7 @@ export default function Dashboard() {
 
             <VStack spacing={8} ml={{ base: "0", md: "220px" }} align="stretch">
                 {/* Título */}
-                <Heading textAlign="center" color={useColorModeValue("teal.600", "teal.300")}>
+                <Heading textAlign="center" color={headingColor}>
                     Dashboard de Indicadores Climáticos
                 </Heading>
 
@@ -362,11 +371,11 @@ export default function Dashboard() {
                 <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                     {/* Mapa de Temperatura */}
                     <Card bg={cardBg} p={4} rounded="lg" shadow="md">
-                        <Heading size="md" mb={4} color={useColorModeValue("teal.600", "teal.200")}>
+                        <Heading size="md" mb={4} color={mapHeadingTeal}>
                             Mapa de Temperatura
                         </Heading>
                         <iframe
-                            src="https://embed.windy.com/embed2.html?overlay=temp&..." // Asegúrate de completar los parámetros necesarios
+                            src="https://embed.windy.com/embed2.html?overlay=temp&..." // Completa los parámetros necesarios
                             width="100%"
                             height="300"
                             frameBorder="0"
@@ -377,11 +386,11 @@ export default function Dashboard() {
 
                     {/* Mapa de Viento */}
                     <Card bg={cardBg} p={4} rounded="lg" shadow="md">
-                        <Heading size="md" mb={4} color={useColorModeValue("blue.600", "blue.200")}>
+                        <Heading size="md" mb={4} color={mapHeadingBlue}>
                             Mapa de Viento
                         </Heading>
                         <iframe
-                            src="https://embed.windy.com/embed2.html?overlay=wind&..." // Asegúrate de completar los parámetros necesarios
+                            src="https://embed.windy.com/embed2.html?overlay=wind&..." // Completa los parámetros necesarios
                             width="100%"
                             height="300"
                             frameBorder="0"
@@ -392,11 +401,11 @@ export default function Dashboard() {
 
                     {/* Mapa de Humedad */}
                     <Card bg={cardBg} p={4} rounded="lg" shadow="md">
-                        <Heading size="md" mb={4} color={useColorModeValue("blue.600", "blue.200")}>
+                        <Heading size="md" mb={4} color={mapHeadingBlue}>
                             Mapa de Humedad
                         </Heading>
                         <iframe
-                            src="https://embed.windy.com/embed2.html?overlay=rh&..." // Asegúrate de completar los parámetros necesarios
+                            src="https://embed.windy.com/embed2.html?overlay=rh&..." // Completa los parámetros necesarios
                             width="100%"
                             height="300"
                             frameBorder="0"
@@ -407,11 +416,11 @@ export default function Dashboard() {
 
                     {/* Mapa de Precipitación */}
                     <Card bg={cardBg} p={4} rounded="lg" shadow="md">
-                        <Heading size="md" mb={4} color={useColorModeValue("orange.600", "orange.200")}>
+                        <Heading size="md" mb={4} color={mapHeadingOrange}>
                             Mapa de Precipitación
                         </Heading>
                         <iframe
-                            src="https://embed.windy.com/embed2.html?overlay=rainAccu&..." // Asegúrate de completar los parámetros necesarios
+                            src="https://embed.windy.com/embed2.html?overlay=rainAccu&..." // Completa los parámetros necesarios
                             width="100%"
                             height="300"
                             frameBorder="0"
@@ -424,13 +433,13 @@ export default function Dashboard() {
                 {/* Gráficas */}
                 <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                     <Card bg={cardBg} p={4} rounded="lg" shadow="md">
-                        <Heading size="md" mb={4} color={useColorModeValue("teal.600", "teal.200")}>
+                        <Heading size="md" mb={4} color={resourceHeadingTeal}>
                             Consumo de Recursos
                         </Heading>
                         <CustomBarChart filteredData={filteredData.barChart} />
                     </Card>
                     <Card bg={cardBg} p={4} rounded="lg" shadow="md">
-                        <Heading size="md" mb={4} color={useColorModeValue("blue.600", "blue.200")}>
+                        <Heading size="md" mb={4} color={resourceHeadingBlue}>
                             Tendencia de Temperatura
                         </Heading>
                         <CustomLineChart filteredData={filteredData.lineChart} />
@@ -440,13 +449,13 @@ export default function Dashboard() {
                 {/* Gráficos Adicionales */}
                 <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                     <Card bg={cardBg} p={4} rounded="lg" shadow="md">
-                        <Heading size="md" mb={4} color={useColorModeValue("yellow.600", "yellow.200")}>
+                        <Heading size="md" mb={4} color={resourceHeadingYellow}>
                             Distribución de Recursos
                         </Heading>
                         <CustomPieChart filteredData={filteredData.pieChart} />
                     </Card>
                     <Card bg={cardBg} p={4} rounded="lg" shadow="md">
-                        <Heading size="md" mb={4} color={useColorModeValue("purple.600", "purple.200")}>
+                        <Heading size="md" mb={4} color={resourceHeadingPurple}>
                             Tendencia de Humedad
                         </Heading>
                         <CustomAreaChart filteredData={filteredData.areaChart} />
@@ -518,7 +527,7 @@ export default function Dashboard() {
                                     <Avatar size="sm" name={msg.user} src="" bg="teal.500">
                                         {msg.avatar}
                                     </Avatar>
-                                    <Box bg={useColorModeValue("gray.200", "gray.700")} p={2} rounded="md" w="100%">
+                                    <Box bg="gray.200" p={2} rounded="md" w="100%">
                                         <Text fontWeight="bold">{msg.user}</Text>
                                         <Text>{msg.text}</Text>
                                     </Box>
