@@ -37,7 +37,7 @@ import {
 import Sidebar from "@/app/components/Sidebar";
 import Filter from "@/app/components/Filter";
 import dynamic from 'next/dynamic';
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 // Importar los componentes de gráficos de manera dinámica con SSR deshabilitado
 const CustomBarChart = dynamic(() => import('@/app/components/BarChart'), { ssr: false });
@@ -118,42 +118,51 @@ export default function Dashboard() {
         // Añade más meses según sea necesario
     };
 
-    // Obtener datos filtrados
-    const filteredData = selectedMonth ? allData[selectedMonth] : {
-        indicators: { tempMax: 35, humidity: 85, rainProb: 60, windSpeed: 20, uvIndex: 7, soilLevel: 40, pestStatus: "Moderado" },
-        barChart: [
-            { name: 'Enero', recursos: 400 },
-            { name: 'Febrero', recursos: 300 },
-            { name: 'Marzo', recursos: 500 },
-            { name: 'Abril', recursos: 200 },
-            { name: 'Mayo', recursos: 278 },
-            { name: 'Junio', recursos: 189 },
-        ],
-        lineChart: [
-            { name: 'Lun', temperatura: 22 },
-            { name: 'Mar', temperatura: 24 },
-            { name: 'Mié', temperatura: 19 },
-            { name: 'Jue', temperatura: 23 },
-            { name: 'Vie', temperatura: 25 },
-            { name: 'Sáb', temperatura: 20 },
-            { name: 'Dom', temperatura: 21 },
-        ],
-        pieChart: [
-            { name: 'Agua', value: 400 },
-            { name: 'Fertilizantes', value: 300 },
-            { name: 'Pesticidas', value: 300 },
-            { name: 'Electricidad', value: 200 },
-        ],
-        areaChart: [
-            { name: 'Lun', humedad: 65 },
-            { name: 'Mar', humedad: 59 },
-            { name: 'Mié', humedad: 80 },
-            { name: 'Jue', humedad: 81 },
-            { name: 'Vie', humedad: 56 },
-            { name: 'Sáb', humedad: 55 },
-            { name: 'Dom', humedad: 40 },
-        ],
-    };
+    // Obtener datos filtrados usando useMemo
+    const filteredData = useMemo(() => {
+        return selectedMonth ? allData[selectedMonth] : {
+            indicators: { tempMax: 35, humidity: 85, rainProb: 60, windSpeed: 20, uvIndex: 7, soilLevel: 40, pestStatus: "Moderado" },
+            barChart: [
+                { name: 'Enero', recursos: 400 },
+                { name: 'Febrero', recursos: 300 },
+                { name: 'Marzo', recursos: 500 },
+                { name: 'Abril', recursos: 200 },
+                { name: 'Mayo', recursos: 278 },
+                { name: 'Junio', recursos: 189 },
+            ],
+            lineChart: [
+                { name: 'Lun', temperatura: 22 },
+                { name: 'Mar', temperatura: 24 },
+                { name: 'Mié', temperatura: 19 },
+                { name: 'Jue', temperatura: 23 },
+                { name: 'Vie', temperatura: 25 },
+                { name: 'Sáb', temperatura: 20 },
+                { name: 'Dom', temperatura: 21 },
+            ],
+            pieChart: [
+                { name: 'Agua', value: 400 },
+                { name: 'Fertilizantes', value: 300 },
+                { name: 'Pesticidas', value: 300 },
+                { name: 'Electricidad', value: 200 },
+            ],
+            areaChart: [
+                { name: 'Lun', humedad: 65 },
+                { name: 'Mar', humedad: 59 },
+                { name: 'Mié', humedad: 80 },
+                { name: 'Jue', humedad: 81 },
+                { name: 'Vie', humedad: 56 },
+                { name: 'Sáb', humedad: 55 },
+                { name: 'Dom', humedad: 40 },
+            ],
+        };
+    }, [selectedMonth, allData]);
+
+    // Definir colores fuera de los objetos
+    const scrollbarThumbColor = useColorModeValue("#CBD5E0", "#4A5568");
+    const cardBg = useColorModeValue("gray.700", "gray.800");
+    const cardHoverBg = useColorModeValue("gray.600", "gray.700");
+    const chatBg = useColorModeValue("white", "gray.800");
+    const chatText = useColorModeValue("black", "white");
 
     useEffect(() => {
         const animateNumbers = () => {
@@ -200,11 +209,6 @@ export default function Dashboard() {
             setNewMessage("");
         }
     };
-
-    const cardBg = useColorModeValue("gray.700", "gray.800");
-    const cardHoverBg = useColorModeValue("gray.600", "gray.700");
-    const chatBg = useColorModeValue("white", "gray.800");
-    const chatText = useColorModeValue("black", "white");
 
     return (
         <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")} color="white" p={6} position="relative">
@@ -504,7 +508,7 @@ export default function Dashboard() {
                                     width: "4px",
                                 },
                                 "&::-webkit-scrollbar-thumb": {
-                                    background: useColorModeValue("#CBD5E0", "#4A5568"),
+                                    background: scrollbarThumbColor,
                                     borderRadius: "24px",
                                 },
                             }}
