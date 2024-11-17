@@ -173,6 +173,12 @@ export default function Dashboard() {
     const resourceHeadingYellow = useColorModeValue("yellow.600", "yellow.200");
     const resourceHeadingPurple = useColorModeValue("purple.600", "purple.200");
 
+    // **Agregar nuevas variables para evitar llamadas directas a useColorModeValue dentro del JSX**
+    const pageBg = useColorModeValue("gray.100", "gray.900");
+    const messageBoxBg = useColorModeValue("gray.200", "gray.700");
+    const inputBg = useColorModeValue("gray.100", "gray.600");
+    const boxBgGray = useColorModeValue("gray.200", "gray.700");
+
     useEffect(() => {
         const animateNumbers = () => {
             if (filteredData.indicators) {
@@ -220,7 +226,7 @@ export default function Dashboard() {
     };
 
     return (
-        <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")} color="white" p={6} position="relative">
+        <Box minH="100vh" bg={pageBg} color="white" p={6} position="relative">
             <Sidebar />
             {/* Filtro en la esquina superior derecha */}
             <Filter selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
@@ -527,7 +533,7 @@ export default function Dashboard() {
                                     <Avatar size="sm" name={msg.user} src="" bg="teal.500">
                                         {msg.avatar}
                                     </Avatar>
-                                    <Box bg="gray.200" p={2} rounded="md" w="100%">
+                                    <Box bg={messageBoxBg} p={2} rounded="md" w="100%">
                                         <Text fontWeight="bold">{msg.user}</Text>
                                         <Text>{msg.text}</Text>
                                     </Box>
@@ -540,7 +546,7 @@ export default function Dashboard() {
                                 placeholder="Escribe un mensaje..."
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
-                                bg={useColorModeValue("gray.100", "gray.600")}
+                                bg={inputBg}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") handleSendMessage();
                                 }}
