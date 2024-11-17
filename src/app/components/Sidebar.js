@@ -80,7 +80,7 @@ export default function Sidebar() {
                         bg="red.600"
                         rounded="md"
                         cursor="pointer"
-                        onClick={() => router.push("/login")}
+                        onClick={() => router.push("/")}
                     >
                         <FaSignOutAlt /> <Text ml={2}>Cerrar Sesión</Text>
                     </Flex>
